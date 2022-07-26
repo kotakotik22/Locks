@@ -1,16 +1,14 @@
 package melonslise.locks.common.config;
 
+import com.google.common.collect.Lists;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeConfigSpec;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
-
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeConfigSpec;
-
-public class LocksServerConfig
-{
+public class LocksServerConfig {
 	public static final ForgeConfigSpec SPEC;
 
 	public static final ForgeConfigSpec.IntValue MAX_LOCKABLE_VOLUME;
@@ -51,11 +49,10 @@ public class LocksServerConfig
 		lockableBlocks = LOCKABLE_BLOCKS.get().stream().map(s -> Pattern.compile(s)).toArray(Pattern[]::new);
 	}
 
-	public static boolean canLock(World world, BlockPos pos)
-	{
+	public static boolean canLock(Level world, BlockPos pos) {
 		String name = world.getBlockState(pos).getBlock().getRegistryName().toString();
-		for(Pattern p : lockableBlocks)
-			if(p.matcher(name).matches())
+		for (Pattern p : lockableBlocks)
+			if (p.matcher(name).matches())
 				return true;
 		return false;
 	}

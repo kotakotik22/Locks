@@ -1,22 +1,21 @@
 package melonslise.locks.common.capability;
 
-import java.util.Observer;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import melonslise.locks.common.util.Lockable;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.IntTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public interface ILockableHandler extends INBTSerializable<IntNBT>, Observer
-{
-	int nextId();
+import java.util.Observer;
 
-	Int2ObjectMap<Lockable> getLoaded();
+public interface ILockableHandler extends INBTSerializable<IntTag>, Observer {
+    int nextId();
 
-	Int2ObjectMap<Lockable> getInChunk(BlockPos pos);
+    Int2ObjectMap<Lockable> getLoaded();
 
-	boolean add(Lockable lkb);
+    Int2ObjectMap<Lockable> getInChunk(BlockPos pos);
 
-	boolean remove(int id);
+    boolean add(Lockable lkb);
+
+    boolean remove(int id);
 }

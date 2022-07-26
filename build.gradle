@@ -1,28 +1,32 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
+		maven { url = 'https://maven.minecraftforge.net' }
 		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+		mavenCentral()
+		maven { url = 'https://maven.parchmentmc.org' }
+	}
+	dependencies {
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
-    }
+		classpath "org.parchmentmc:librarian:1.+"
+	}
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 version = '3.0.3'
 group = 'melonslise.locks'
 archivesBaseName = 'locks'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-	mappings channel: 'official', version: '1.16.5'
-    
+	mappings channel: 'parchment', version: "$parchment_version-$minecraft_version"
+
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
 	runs {
@@ -73,8 +77,8 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.16.5-36.1.4'
-	annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+	minecraft "net.minecraftforge:forge:$minecraft_version-$forge_version"
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {

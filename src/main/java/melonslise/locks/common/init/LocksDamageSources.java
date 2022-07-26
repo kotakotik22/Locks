@@ -1,6 +1,6 @@
 package melonslise.locks.common.init;
 
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 
 public final class LocksDamageSources
 {

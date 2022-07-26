@@ -1,11 +1,11 @@
 package melonslise.locks.common.network.toclient;
 
-import java.util.function.Supplier;
-
 import melonslise.locks.common.init.LocksCapabilities;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class RemoveLockablePacket
 {
@@ -16,25 +16,21 @@ public class RemoveLockablePacket
 		this.id = id;
 	}
 
-	public static RemoveLockablePacket decode(PacketBuffer buf)
-	{
+	public static RemoveLockablePacket decode(FriendlyByteBuf buf) {
 		return new RemoveLockablePacket(buf.readInt());
 	}
 
-	public static void encode(RemoveLockablePacket pkt, PacketBuffer buf)
-	{
+	public static void encode(RemoveLockablePacket pkt, FriendlyByteBuf buf) {
 		buf.writeInt(pkt.id);
 	}
 
 	public static void handle(RemoveLockablePacket pkt, Supplier<NetworkEvent.Context> ctx)
 	{
 		// Use runnable, lambda causes issues with class loading
-		ctx.get().enqueueWork(new Runnable()
-		{
+		ctx.get().enqueueWork(new Runnable() {
 			@Override
-			public void run()
-			{
-				Minecraft.getInstance().level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).ifPresent(handler -> handler.remove(pkt.id));
+			public void run() {
+				Minecraft.getInstance().level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).ifPresent(handler -> handler.remove(pkt.id));
 			}
 		});
 		ctx.get().setPacketHandled(true);

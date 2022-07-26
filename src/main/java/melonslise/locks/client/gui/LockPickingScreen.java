@@ -1,50 +1,44 @@
 package melonslise.locks.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import melonslise.locks.Locks;
+import melonslise.locks.client.gui.sprite.SpringSprite;
+import melonslise.locks.client.gui.sprite.Sprite;
+import melonslise.locks.client.gui.sprite.TextureInfo;
+import melonslise.locks.client.gui.sprite.action.*;
+import melonslise.locks.common.container.LockPickingContainer;
+import melonslise.locks.common.init.LocksNetwork;
+import melonslise.locks.common.network.toserver.TryPinPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import melonslise.locks.Locks;
-import melonslise.locks.client.gui.sprite.SpringSprite;
-import melonslise.locks.client.gui.sprite.Sprite;
-import melonslise.locks.client.gui.sprite.TextureInfo;
-import melonslise.locks.client.gui.sprite.action.AccelerateAction;
-import melonslise.locks.client.gui.sprite.action.FadeAction;
-import melonslise.locks.client.gui.sprite.action.IAction;
-import melonslise.locks.client.gui.sprite.action.MoveAction;
-import melonslise.locks.client.gui.sprite.action.WaitAction;
-import melonslise.locks.common.container.LockPickingContainer;
-import melonslise.locks.common.init.LocksNetwork;
-import melonslise.locks.common.network.toserver.TryPinPacket;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 @OnlyIn(Dist.CLIENT)
-public class LockPickingScreen extends ContainerScreen<LockPickingContainer>
-{
-	public static final ITextComponent HINT = new TranslationTextComponent(Locks.ID + ".gui.lockpicking.open");
+public class LockPickingScreen extends AbstractContainerScreen<LockPickingContainer> {
+	public static final Component HINT = new TranslatableComponent(Locks.ID + ".gui.lockpicking.open");
 
 	public static final TextureInfo
-		FRONT_WALL_TEX = new TextureInfo(6, 0, 4, 60, 48, 80),
-		COLUMN_TEX = new TextureInfo(10, 0, 8, 60, 48, 80),
-		INNER_WALL_TEX = new TextureInfo(18, 0, 4, 60, 48, 80),
-		BACK_WALL_TEX = new TextureInfo(22, 0, 4, 60, 48, 80),
-		HANDLE_TEX = new TextureInfo(26, 0, 19, 73, 48, 80),
-		UPPER_PIN_TEX = new TextureInfo(0, 0, 6, 8, 48, 80),
+			FRONT_WALL_TEX = new TextureInfo(6, 0, 4, 60, 48, 80),
+			COLUMN_TEX = new TextureInfo(10, 0, 8, 60, 48, 80),
+			INNER_WALL_TEX = new TextureInfo(18, 0, 4, 60, 48, 80),
+			BACK_WALL_TEX = new TextureInfo(22, 0, 4, 60, 48, 80),
+			HANDLE_TEX = new TextureInfo(26, 0, 19, 73, 48, 80),
+			UPPER_PIN_TEX = new TextureInfo(0, 0, 6, 8, 48, 80),
 		LOCK_PICK_TEX = new TextureInfo(0, 0, 160, 12, 160, 16);
 	public static final TextureInfo[] PIN_TUMBLER_TEX = new TextureInfo[] {
 		new TextureInfo(0, 8, 6, 11, 48, 80),
@@ -69,14 +63,13 @@ public class LockPickingScreen extends ContainerScreen<LockPickingContainer>
 
 	public final int length;
 	public final boolean pins[];
-	public final Hand hand;
+	public final InteractionHand hand;
 
 	protected int currPin;
 
 	protected boolean frozen = true;
 
-	public LockPickingScreen(LockPickingContainer cont, PlayerInventory inv, ITextComponent title)
-	{
+	public LockPickingScreen(LockPickingContainer cont, Inventory inv, Component title) {
 		super(cont, inv, title);
 		this.length = cont.lockable.lock.getLength();
 		this.pins = new boolean[this.length];
@@ -120,30 +113,28 @@ public class LockPickingScreen extends ContainerScreen<LockPickingContainer>
 	}
 
 	@Override
-	public void render(MatrixStack mtx, int mouseX, int mouseY, float partialTick)
-	{
+	public void render(PoseStack mtx, int mouseX, int mouseY, float partialTick) {
 		this.renderBackground(mtx);
 		super.render(mtx, mouseX, mouseY, partialTick);
 	}
 
 	@Override
-	protected void renderBg(MatrixStack mtx, float partialTick, int mouseX, int mouseY)
-	{
+	protected void renderBg(PoseStack mtx, float partialTick, int mouseX, int mouseY) {
 		float pt = this.minecraft.getFrameTime(); // idk why, but partialTick looks laggy AF... Use getFrameTime instead!
 		int cornerX = (this.width - this.imageWidth) / 2;
 		int cornerY = (this.height - this.imageHeight) / 2;
 
-		this.minecraft.getTextureManager().bind(this.lockTex);
+		// todo (kota): im not sure the first argument should be 0 here (duplicate)
+		RenderSystem.setShaderTexture(0, lockTex);
 
 		mtx.pushPose();
 		mtx.translate(cornerX, cornerY, 0f);
 		mtx.scale(2f, 2f, 2f);
 		FRONT_WALL_TEX.draw(mtx, 0f, 0f, 1f);
 
-		for(int a = 0; a < this.length; ++a)
-		{
+		for (int a = 0; a < this.length; ++a) {
 			COLUMN_TEX.draw(mtx, FRONT_WALL_TEX.width + a * (COLUMN_TEX.width + INNER_WALL_TEX.width), 0f, 1f);
-			if(a != this.length - 1)
+			if (a != this.length - 1)
 				INNER_WALL_TEX.draw(mtx, FRONT_WALL_TEX.width + COLUMN_TEX.width + a * (COLUMN_TEX.width + INNER_WALL_TEX.width), 0f, 1f);
 		}
 		BACK_WALL_TEX.draw(mtx, this.length * (COLUMN_TEX.width + INNER_WALL_TEX.width), 0f, 1f);
@@ -153,29 +144,28 @@ public class LockPickingScreen extends ContainerScreen<LockPickingContainer>
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		for(Sprite sprite : this.sprites)
 		{
-			if(sprite == this.lockPick)
-				this.minecraft.getTextureManager().bind(this.pickTex); // FIXME fucking terrible
+			if (sprite == this.lockPick)
+				// todo (kota): im not sure the first argument should be 0 here (duplicate)
+				RenderSystem.setShaderTexture(0, this.pickTex); // FIXME fucking terrible
 			sprite.draw(mtx, pt);
 		}
 		mtx.popPose();
 	}
 
 	@Override
-	protected void renderLabels(MatrixStack mtx, int mouseX, int mouseY)
-	{
+	protected void renderLabels(PoseStack mtx, int mouseX, int mouseY) {
 		// Without shadow
 		this.font.draw(mtx, this.title, 0f, -this.font.lineHeight, 0xffffff);
-		if(this.getMenu().isOpen())
+		if (this.getMenu().isOpen())
 			this.font.draw(mtx, HINT, (this.imageWidth - this.font.width(HINT)) / 2f, this.imageHeight + 10f, 0xffffff);
 	}
 
 	@Override
-	public void tick()
-	{
-		super.tick();
-		for(Sprite sprite : this.sprites)
+	protected void containerTick() {
+		super.containerTick();
+		for (Sprite sprite : this.sprites)
 			sprite.update();
-		if(!this.frozen)
+		if (!this.frozen)
 			this.boundLockPick();
 		this.updatePickParts();
 	}
@@ -193,7 +183,7 @@ public class LockPickingScreen extends ContainerScreen<LockPickingContainer>
 
 	protected void boundLockPick()
 	{
-		this.lockPick.posX = 10 - LOCK_PICK_TEX.width + MathHelper.clamp(this.lockPick.posX - 10 + LOCK_PICK_TEX.width, 0, (this.length - 1) * (COLUMN_TEX.width + INNER_WALL_TEX.width));
+		this.lockPick.posX = 10 - LOCK_PICK_TEX.width + Mth.clamp(this.lockPick.posX - 10 + LOCK_PICK_TEX.width, 0, (this.length - 1) * (COLUMN_TEX.width + INNER_WALL_TEX.width));
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package melonslise.locks.client.gui.sprite;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import melonslise.locks.client.util.LocksClientUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,8 +20,7 @@ public class TextureInfo
 		this.canvasHeight = canvasHeight;
 	}
 
-	public void draw(MatrixStack mtx, float x, float y, float alpha)
-	{
+	public void draw(PoseStack mtx, float x, float y, float alpha) {
 		LocksClientUtil.texture(mtx, x, y, this.startX, this.startY, this.width, this.height, this.canvasWidth, this.canvasHeight, alpha);
 	}
 }

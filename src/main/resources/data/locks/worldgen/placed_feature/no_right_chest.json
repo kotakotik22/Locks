@@ -1,0 +1,11 @@
+{
+  "feature": {
+    "type": "minecraft:no_op",
+    "config": {}
+  },
+  "placement": [
+    {
+      "type": "locks:right_chest_filter"
+    }
+  ]
+}

@@ -1,14 +1,15 @@
 package melonslise.locks.common.capability;
 
-import javax.annotation.Nonnull;
-
 import melonslise.locks.common.init.LocksItemTags;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 // Thanks to Gigaherz
 public class KeyRingInventory implements IItemHandlerModifiable
@@ -29,14 +30,12 @@ public class KeyRingInventory implements IItemHandlerModifiable
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot)
-	{
+	public @NotNull ItemStack getStackInSlot(int slot) {
 		this.validateSlotIndex(slot);
-		ListNBT list = this.stack.getOrCreateTag().getList("Items", Constants.NBT.TAG_COMPOUND);
-		for(int a = 0; a < list.size(); a++)
-		{
-			CompoundNBT nbt = list.getCompound(a);
-			if(nbt.getInt("Slot") != slot)
+		ListTag list = this.stack.getOrCreateTag().getList("Items", Tag.TAG_COMPOUND);
+		for (int a = 0; a < list.size(); a++) {
+			CompoundTag nbt = list.getCompound(a);
+			if (nbt.getInt("Slot") != slot)
 				continue;
 			return ItemStack.of(nbt);
 		}
@@ -47,17 +46,17 @@ public class KeyRingInventory implements IItemHandlerModifiable
 	public void setStackInSlot(int slot, ItemStack stack)
 	{
 		this.validateSlotIndex(slot);
-		CompoundNBT nbt = null;
+		CompoundTag nbt = null;
 		if(!stack.isEmpty())
 		{
-			nbt = new CompoundNBT();
+			nbt = new CompoundTag();
 			nbt.putInt("Slot", slot);
 			stack.save(nbt);
 		}
-		ListNBT list = this.stack.getOrCreateTag().getList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = this.stack.getOrCreateTag().getList("Items", Tag.TAG_COMPOUND);
 		for(int a = 0; a < list.size(); a++)
 		{
-			CompoundNBT existing = list.getCompound(a);
+			CompoundTag existing = list.getCompound(a);
 			if(existing.getInt("Slot") != slot)
 				continue;
 			if(!stack.isEmpty())
@@ -138,6 +137,6 @@ public class KeyRingInventory implements IItemHandlerModifiable
 	@Override
 	public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 	{
-		return stack.getItem().is(LocksItemTags.KEYS);
+		return stack.is(LocksItemTags.KEYS);
 	}
 }

@@ -1,8 +1,8 @@
 package melonslise.locks.client.event;
 
 import melonslise.locks.Locks;
+import melonslise.locks.client.init.LocksContainers;
 import melonslise.locks.client.init.LocksItemModelsProperties;
-import melonslise.locks.client.init.LocksScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,7 +16,7 @@ public final class LocksClientModEvents
 	@SubscribeEvent
 	public static void onSetup(FMLClientSetupEvent e)
 	{
-		LocksScreens.register();
+		LocksContainers.register();
 		LocksItemModelsProperties.register();
 	}
 }

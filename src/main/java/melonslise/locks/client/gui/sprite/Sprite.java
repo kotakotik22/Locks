@@ -1,25 +1,22 @@
 package melonslise.locks.client.gui.sprite;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import melonslise.locks.client.gui.sprite.action.IAction;
 import melonslise.locks.client.util.LocksClientUtil;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 @OnlyIn(Dist.CLIENT)
-public class Sprite
-{
+public class Sprite {
 	private Queue<IAction> actions = new ArrayDeque<>(4);
 	public TextureInfo tex;
-	public float posX , posY, oldPosX, oldPosY, speedX, speedY, rot, oldRot, rotSpeed, originX, originY, alpha = 1f, oldAlpha = 1f;
+	public float posX, posY, oldPosX, oldPosY, speedX, speedY, rot, oldRot, rotSpeed, originX, originY, alpha = 1f, oldAlpha = 1f;
 
-	public Sprite(TextureInfo tex)
-	{
+	public Sprite(TextureInfo tex) {
 		this.tex = tex;
 	}
 
@@ -56,9 +53,8 @@ public class Sprite
 	}
 
 	// FIXME new quat obj every frame? JFC
-	public void draw(MatrixStack mtx, float partialTick)
-	{
-		if(this.alpha <= 0f)
+	public void draw(PoseStack mtx, float partialTick) {
+		if (this.alpha <= 0f)
 			return;
 		mtx.pushPose();
 		mtx.translate(this.originX, this.originY, 0f);

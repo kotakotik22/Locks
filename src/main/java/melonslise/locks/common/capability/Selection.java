@@ -1,8 +1,8 @@
 package melonslise.locks.common.capability;
 
 import melonslise.locks.Locks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 
 public class Selection implements ISelection
 {

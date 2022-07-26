@@ -1,15 +1,11 @@
 package melonslise.locks.common.init;
 
 import melonslise.locks.Locks;
-import melonslise.locks.common.network.toclient.AddLockablePacket;
-import melonslise.locks.common.network.toclient.AddLockableToChunkPacket;
-import melonslise.locks.common.network.toclient.RemoveLockablePacket;
-import melonslise.locks.common.network.toclient.TryPinResultPacket;
-import melonslise.locks.common.network.toclient.UpdateLockablePacket;
+import melonslise.locks.common.network.toclient.*;
 import melonslise.locks.common.network.toserver.TryPinPacket;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class LocksNetwork
 {

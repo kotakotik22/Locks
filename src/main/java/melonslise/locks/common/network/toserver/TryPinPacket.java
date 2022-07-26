@@ -1,12 +1,13 @@
 package melonslise.locks.common.network.toserver;
 
-import java.util.function.Supplier;
 
 import melonslise.locks.common.container.LockPickingContainer;
-import melonslise.locks.common.init.LocksContainerTypes;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import melonslise.locks.common.init.LocksMenuTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class TryPinPacket
 {
@@ -17,13 +18,11 @@ public class TryPinPacket
 		this.pin = pin;
 	}
 
-	public static TryPinPacket decode(PacketBuffer buf)
-	{
+	public static TryPinPacket decode(FriendlyByteBuf buf) {
 		return new TryPinPacket(buf.readByte());
 	}
 
-	public static void encode(TryPinPacket pkt, PacketBuffer buf)
-	{
+	public static void encode(TryPinPacket pkt, FriendlyByteBuf buf) {
 		buf.writeByte(pkt.pin);
 	}
 
@@ -33,10 +32,9 @@ public class TryPinPacket
 		ctx.get().enqueueWork(new Runnable()
 		{
 			@Override
-			public void run()
-			{
-				Container container = ctx.get().getSender().containerMenu;
-				if(container.getType() == LocksContainerTypes.LOCK_PICKING.get())
+			public void run() {
+				AbstractContainerMenu container = ctx.get().getSender().containerMenu;
+				if (container.getType() == LocksMenuTypes.LOCK_PICKING.get())
 					((LockPickingContainer) container).tryPin(pkt.pin);
 			}
 		});

@@ -1,12 +1,12 @@
 package melonslise.locks.common.network.toclient;
 
-import java.util.function.Supplier;
-
 import melonslise.locks.common.init.LocksCapabilities;
 import melonslise.locks.common.util.Lockable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class UpdateLockablePacket
 {
@@ -25,13 +25,11 @@ public class UpdateLockablePacket
 		this(lkb.id, lkb.lock.isLocked());
 	}
 
-	public static UpdateLockablePacket decode(PacketBuffer buf)
-	{
+	public static UpdateLockablePacket decode(FriendlyByteBuf buf) {
 		return new UpdateLockablePacket(buf.readInt(), buf.readBoolean());
 	}
 
-	public static void encode(UpdateLockablePacket pkt, PacketBuffer buf)
-	{
+	public static void encode(UpdateLockablePacket pkt, FriendlyByteBuf buf) {
 		buf.writeInt(pkt.id);
 		buf.writeBoolean(pkt.locked);
 	}
@@ -44,7 +42,7 @@ public class UpdateLockablePacket
 			@Override
 			public void run()
 			{
-				Minecraft.getInstance().level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).ifPresent(handler -> handler.getLoaded().get(pkt.id).lock.setLocked(pkt.locked));
+				Minecraft.getInstance().level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).ifPresent(handler -> handler.getLoaded().get(pkt.id).lock.setLocked(pkt.locked));
 			}
 		});
 		ctx.get().setPacketHandled(true);

@@ -2,19 +2,19 @@ package melonslise.locks.common.init;
 
 import melonslise.locks.Locks;
 import melonslise.locks.common.recipe.KeyRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class LocksRecipeSerializers
 {
-	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Locks.ID);
+	public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Locks.ID);
 
-	public static final RegistryObject<IRecipeSerializer<KeyRecipe>> KEY = add("crafting_key", new SpecialRecipeSerializer<>(KeyRecipe::new));
+	public static final RegistryObject<RecipeSerializer<KeyRecipe>> KEY = add("crafting_key", new SimpleRecipeSerializer<>(KeyRecipe::new));
 
 	private LocksRecipeSerializers() {}
 
@@ -23,8 +23,7 @@ public final class LocksRecipeSerializers
 		RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 
-	public static <T extends IRecipe<?>> RegistryObject<IRecipeSerializer<T>> add(String name, IRecipeSerializer<T> serializer)
-	{
+	public static <T extends Recipe<?>> RegistryObject<RecipeSerializer<T>> add(String name, RecipeSerializer<T> serializer) {
 		return RECIPE_SERIALIZERS.register(name, () -> serializer);
 	}
 }

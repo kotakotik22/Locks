@@ -1,36 +1,35 @@
 package melonslise.locks.common.item;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import melonslise.locks.Locks;
 import melonslise.locks.common.container.LockPickingContainer;
 import melonslise.locks.common.init.LocksEnchantments;
 import melonslise.locks.common.util.Lockable;
 import melonslise.locks.common.util.LocksPredicates;
 import melonslise.locks.common.util.LocksUtil;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LockPickItem extends Item
 {
-	public static final ITextComponent TOO_COMPLEX_MESSAGE = new TranslationTextComponent(Locks.ID + ".status.too_complex");
+	public static final Component TOO_COMPLEX_MESSAGE = new TranslatableComponent(Locks.ID + ".status.too_complex");
 
 	public final float strength;
 
@@ -45,7 +44,7 @@ public class LockPickItem extends Item
 	// WARNING: EXPECTS LOCKPICKITEM STACK
 	public static float getOrSetStrength(ItemStack stack)
 	{
-		CompoundNBT nbt = stack.getOrCreateTag();
+		CompoundTag nbt = stack.getOrCreateTag();
 		if(!nbt.contains(KEY_STRENGTH))
 			nbt.putFloat(KEY_STRENGTH, ((LockPickItem) stack.getItem()).strength);
 		return nbt.getFloat(KEY_STRENGTH);
@@ -62,33 +61,30 @@ public class LockPickItem extends Item
 	}
 
 	@Override
-	public ActionResultType useOn(ItemUseContext ctx)
-	{
-		World world = ctx.getLevel();
-		PlayerEntity player = ctx.getPlayer();
-		BlockPos pos = ctx.getClickedPos();
+	public InteractionResult useOn(UseOnContext ctx) {
+		var world = ctx.getLevel();
+		var player = ctx.getPlayer();
+		var pos = ctx.getClickedPos();
 		List<Lockable> match = LocksUtil.intersecting(world, pos).filter(LocksPredicates.LOCKED).collect(Collectors.toList());
-		if(match.isEmpty())
-			return ActionResultType.PASS;
+		if (match.isEmpty())
+			return InteractionResult.PASS;
 		Lockable lkb = match.get(0);
-		if(!canPick(ctx.getItemInHand(), lkb))
-		{
-			if(world.isClientSide)
+		if (!canPick(ctx.getItemInHand(), lkb)) {
+			if (world.isClientSide)
 				player.displayClientMessage(TOO_COMPLEX_MESSAGE, true);
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
-		if(world.isClientSide)
-			return ActionResultType.SUCCESS;
-		Hand hand = ctx.getHand();
-		NetworkHooks.openGui((ServerPlayerEntity) player, new LockPickingContainer.Provider(hand, lkb), new LockPickingContainer.Writer(hand, lkb));
-		return ActionResultType.SUCCESS;
+		if (world.isClientSide)
+			return InteractionResult.SUCCESS;
+		InteractionHand hand = ctx.getHand();
+		NetworkHooks.openGui((ServerPlayer) player, new LockPickingContainer.Provider(hand, lkb), new LockPickingContainer.Writer(hand, lkb));
+		return InteractionResult.SUCCESS;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void appendHoverText(ItemStack stack, World world, List<ITextComponent> lines, ITooltipFlag flag)
-	{
+	public void appendHoverText(ItemStack stack, @Nullable net.minecraft.world.level.Level world, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
 		super.appendHoverText(stack, world, lines, flag);
-		lines.add(new TranslationTextComponent(Locks.ID + ".tooltip.strength", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(stack.hasTag() && stack.getTag().contains(KEY_STRENGTH) ? stack.getTag().getFloat(KEY_STRENGTH) : this.strength)).withStyle(TextFormatting.DARK_GREEN));
+		lines.add(new TranslatableComponent(Locks.ID + ".tooltip.strength", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(stack.hasTag() && stack.getTag().contains(KEY_STRENGTH) ? stack.getTag().getFloat(KEY_STRENGTH) : this.strength)).withStyle(ChatFormatting.DARK_GREEN));
 	}
 }
