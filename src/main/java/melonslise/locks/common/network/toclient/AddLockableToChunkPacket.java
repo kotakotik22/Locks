@@ -51,8 +51,8 @@ public class AddLockableToChunkPacket
 			@Override
 			public void run() {
 				Minecraft mc = Minecraft.getInstance();
-				ILockableStorage st = mc.level.getChunk(pkt.x, pkt.z).getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null);
-				ILockableHandler handler = mc.level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+				ILockableStorage st = mc.level.getChunk(pkt.x, pkt.z).getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null);
+				ILockableHandler handler = mc.level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 				Int2ObjectMap<Lockable> lkbs = handler.getLoaded();
 				Lockable lkb = lkbs.get(pkt.lockable.id);
 				if (lkb == lkbs.defaultReturnValue()) {

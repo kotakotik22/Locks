@@ -35,7 +35,7 @@ public class TemplateMixin {
 	private void fillFromWorld(Level world, BlockPos start, Vec3i size, boolean takeEntities, Block toIgnore, CallbackInfo ci) {
 		if (size.getX() >= 1 && size.getY() >= 1 && size.getZ() >= 1) {
 			this.lockableInfos.clear();
-			ILockableHandler handler = world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+			ILockableHandler handler = world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 			Cuboid6i bb = new Cuboid6i(start, start.offset(size.getX() - 1, size.getY() - 1, size.getZ() - 1));
 			handler.getLoaded().values().stream()
 					.filter(lkb -> lkb.bb.intersects(bb))
@@ -57,7 +57,7 @@ public class TemplateMixin {
 			Locks.LOGGER.warn(world + "#getLevel threw an error! Skipping lockable placement for this template ");
 			return;
 		}
-		ILockableHandler handler = level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+		ILockableHandler handler = level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 		for(LockableInfo lkb : this.lockableInfos)
 		{
 			BlockPos pos1 = LocksUtil.transform(lkb.bb.x1, lkb.bb.y1, lkb.bb.z1, settings);

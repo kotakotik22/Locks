@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChunkManagerMixin {
 	@Inject(at = @At("TAIL"), method = "playerLoadedChunk")
 	private void playerLoadedChunk(ServerPlayer player, MutableObject<ClientboundLevelChunkWithLightPacket> pkts, LevelChunk ch, CallbackInfo ci) {
-		ch.getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null).get().values()
+		ch.getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null).get().values()
 				.forEach(lkb -> LocksNetwork.MAIN.send(PacketDistributor.TRACKING_CHUNK.with(() -> ch), new AddLockableToChunkPacket(lkb, ch)));
 	}
 }

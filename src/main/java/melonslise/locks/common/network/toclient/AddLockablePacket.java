@@ -33,7 +33,7 @@ public class AddLockablePacket
 		ctx.get().enqueueWork(new Runnable() {
 			@Override
 			public void run() {
-				Objects.requireNonNull(Minecraft.getInstance().level).getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).ifPresent(handler -> handler.add(pkt.lockable));
+				Objects.requireNonNull(Minecraft.getInstance().level).getCapability(LocksCapabilities.LOCKABLE_HANDLER).ifPresent(handler -> handler.add(pkt.lockable));
 			}
 		});
 		ctx.get().setPacketHandled(true);

@@ -71,7 +71,7 @@ public class Lockable extends Observable implements Observer {
 	public Map<List<BlockState>, State> cache = new HashMap<>(6);
 
 	public Lockable(Cuboid6i bb, Lock lock, Transform tr, ItemStack stack, Level world) {
-		this(bb, lock, tr, stack, world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null).nextId());
+		this(bb, lock, tr, stack, world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null).nextId());
 	}
 
 	public Lockable(Cuboid6i bb, Lock lock, Transform tr, ItemStack stack, int id)

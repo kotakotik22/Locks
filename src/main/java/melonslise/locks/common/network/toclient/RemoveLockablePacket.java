@@ -30,7 +30,7 @@ public class RemoveLockablePacket
 		ctx.get().enqueueWork(new Runnable() {
 			@Override
 			public void run() {
-				Minecraft.getInstance().level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).ifPresent(handler -> handler.remove(pkt.id));
+				Minecraft.getInstance().level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).ifPresent(handler -> handler.remove(pkt.id));
 			}
 		});
 		ctx.get().setPacketHandled(true);

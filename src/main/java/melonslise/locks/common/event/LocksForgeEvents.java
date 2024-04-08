@@ -128,8 +128,8 @@ public final class LocksForgeEvents {
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload e) {
         LevelChunk ch = (LevelChunk) e.getChunk();
-        ILockableHandler handler = ch.getLevel().getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
-        ch.getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null).get().values().forEach(lkb ->
+        ILockableHandler handler = ch.getLevel().getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
+        ch.getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null).get().values().forEach(lkb ->
         {
             handler.getLoaded().remove(lkb.id);
             lkb.deleteObserver(handler);
@@ -141,7 +141,7 @@ public final class LocksForgeEvents {
         BlockPos pos = e.getPos();
         Level world = e.getWorld();
         Player player = e.getPlayer();
-        ILockableHandler handler = world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+        ILockableHandler handler = world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
         Lockable[] intersect = handler.getInChunk(pos).values().stream().filter(lkb -> lkb.bb.intersects(pos)).toArray(Lockable[]::new);
         if (intersect.length == 0)
             return;
@@ -185,7 +185,7 @@ public final class LocksForgeEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent e) {
         if (e.phase != Phase.START)
             return;
-        ISelection select = e.player.getCapability(LocksCapabilities.Instances.SELECTION).orElse(null);
+        ISelection select = e.player.getCapability(LocksCapabilities.SELECTION).orElse(null);
         if (select.get() == null)
             return;
         for (ItemStack stack : e.player.getHandSlots())

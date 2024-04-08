@@ -193,7 +193,7 @@ public class LockPickingContainer extends AbstractContainerMenu {
 
 	public static final IContainerFactory<LockPickingContainer> FACTORY = (id, inv, buf) ->
 	{
-		return new LockPickingContainer(id, inv.player, buf.readEnum(InteractionHand.class), inv.player.level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null).getLoaded().get(buf.readInt()));
+		return new LockPickingContainer(id, inv.player, buf.readEnum(InteractionHand.class), inv.player.level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null).getLoaded().get(buf.readInt()));
 	};
 
 	public static class Writer implements Consumer<FriendlyByteBuf> {

@@ -56,7 +56,7 @@ public class LockableStorage implements ILockableStorage
 
 	@Override
 	public void deserializeNBT(ListTag nbt) {
-		ILockableHandler handler = this.chunk.getLevel().getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+		ILockableHandler handler = this.chunk.getLevel().getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 		Int2ObjectMap<Lockable> lkbs = handler.getLoaded();
 		for (int a = 0; a < nbt.size(); ++a) {
 			CompoundTag nbt1 = nbt.getCompound(a);

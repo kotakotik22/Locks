@@ -42,7 +42,7 @@ public class UpdateLockablePacket
 			@Override
 			public void run()
 			{
-				Minecraft.getInstance().level.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).ifPresent(handler -> handler.getLoaded().get(pkt.id).lock.setLocked(pkt.locked));
+				Minecraft.getInstance().level.getCapability(LocksCapabilities.LOCKABLE_HANDLER).ifPresent(handler -> handler.getLoaded().get(pkt.id).lock.setLocked(pkt.locked));
 			}
 		});
 		ctx.get().setPacketHandled(true);

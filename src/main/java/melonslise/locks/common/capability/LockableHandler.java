@@ -54,7 +54,7 @@ public class LockableHandler implements ILockableHandler
 	@Override
 	public Int2ObjectMap<Lockable> getInChunk(BlockPos pos)
 	{
-		return this.world.hasChunkAt(pos) ? this.world.getChunkAt(pos).getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null).get() : null;
+		return this.world.hasChunkAt(pos) ? this.world.getChunkAt(pos).getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null).get() : null;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class LockableHandler implements ILockableHandler
 		{
 			if(!this.world.hasChunk(x, z))
 				return null;
-			ILockableStorage st = this.world.getChunk(x, z).getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null);
+			ILockableStorage st = this.world.getChunk(x, z).getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null);
 			return st.get().values().stream().anyMatch(lkb1 -> lkb1.bb.intersects(lkb.bb)) ? null : st;
 		}, true);
 		if(sts == null)
@@ -96,7 +96,7 @@ public class LockableHandler implements ILockableHandler
 
 		// Remove from chunk
 		for(int a = 0; a < chs.size(); ++a)
-			chs.get(a).getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null).remove(id);
+			chs.get(a).getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null).remove(id);
 		// Remove from world
 		this.lockables.remove(id);
 		lkb.deleteObserver(this);
