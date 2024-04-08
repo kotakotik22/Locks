@@ -81,7 +81,7 @@ public class LockItem extends LockingItem {
 	public InteractionResult useOn(UseOnContext ctx) {
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		if (!LocksServerConfig.canLock(world, pos) || ctx.getLevel().getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null).getInChunk(pos).values().stream().anyMatch(lkb -> lkb.bb.intersects(pos)))
+		if (!LocksServerConfig.canLock(world, pos) || ctx.getLevel().getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null).getInChunk(pos).values().stream().anyMatch(lkb -> lkb.bb.intersects(pos)))
 			return InteractionResult.PASS;
 		return LocksServerConfig.EASY_LOCK.get() ? this.easyLock(ctx) : this.freeLock(ctx);
 	}
@@ -89,7 +89,7 @@ public class LockItem extends LockingItem {
 	public InteractionResult freeLock(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
 		BlockPos pos = ctx.getClickedPos();
-		ISelection select = player.getCapability(LocksCapabilities.Instances.SELECTION).orElse(null);
+		ISelection select = player.getCapability(LocksCapabilities.SELECTION).orElse(null);
 		BlockPos pos1 = select.get();
 		if (pos1 == null)
 			select.set(pos);
@@ -103,7 +103,7 @@ public class LockItem extends LockingItem {
 			ItemStack stack = ctx.getItemInHand();
 			ItemStack lockStack = stack.copy();
 			lockStack.setCount(1);
-			ILockableHandler handler = world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+			ILockableHandler handler = world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 			if (!handler.add(new Lockable(new Cuboid6i(pos1, pos), Lock.from(stack), Transform.fromDirection(ctx.getClickedFace(), player.getDirection().getOpposite()), lockStack, world)))
 				return InteractionResult.PASS;
 			if (!player.isCreative())
@@ -136,7 +136,7 @@ public class LockItem extends LockingItem {
 		ItemStack stack = ctx.getItemInHand();
 		ItemStack lockStack = stack.copy();
 		lockStack.setCount(1);
-		ILockableHandler handler = world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+		ILockableHandler handler = world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 		if (!handler.add(new Lockable(new Cuboid6i(pos, pos1), Lock.from(stack), Transform.fromDirection(ctx.getClickedFace(), player.getDirection().getOpposite()), lockStack, world)))
 			return InteractionResult.PASS;
 		if (!player.isCreative())

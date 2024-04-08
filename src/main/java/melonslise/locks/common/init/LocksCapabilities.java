@@ -16,22 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Locks.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class LocksCapabilities {
-	public static final class Instances {
-		private Instances() {
-		}
-
-		private static <T> Capability<T> get() {
-			// i love java: <>(){}
-			return CapabilityManager.get(new CapabilityToken<>() {
-			});
-		}
-
-		public static final Capability<ILockableHandler> LOCKABLE_HANDLER = LocksCapabilities.LOCKABLE_HANDLER;
-
-		public static final Capability<ILockableStorage> LOCKABLE_STORAGE = LocksCapabilities.LOCKABLE_STORAGE;
-
-		public static final Capability<ISelection> SELECTION = LocksCapabilities.SELECTION;
-	}
 
 	public static final Capability<ILockableHandler> LOCKABLE_HANDLER = CapabilityManager.get(new CapabilityToken<>() {
 	});
@@ -54,15 +38,15 @@ public final class LocksCapabilities {
 	}
 
 	public static void attachToWorld(AttachCapabilitiesEvent<Level> e) {
-		e.addCapability(LockableHandler.ID, new SerializableCapabilityProvider<>(Instances.LOCKABLE_HANDLER, new LockableHandler(e.getObject())));
+		e.addCapability(LockableHandler.ID, new SerializableCapabilityProvider<>(LOCKABLE_HANDLER, new LockableHandler(e.getObject())));
 	}
 
 	public static void attachToChunk(AttachCapabilitiesEvent<LevelChunk> e) {
-		e.addCapability(LockableStorage.ID, new SerializableCapabilityProvider<>(Instances.LOCKABLE_STORAGE, new LockableStorage(e.getObject())));
+		e.addCapability(LockableStorage.ID, new SerializableCapabilityProvider<>(LOCKABLE_STORAGE, new LockableStorage(e.getObject())));
 	}
 
 	public static void attachToEntity(AttachCapabilitiesEvent<Entity> e) {
 		if (e.getObject() instanceof Player)
-			e.addCapability(Selection.ID, new CapabilityProvider(Instances.SELECTION, new Selection()));
+			e.addCapability(Selection.ID, new CapabilityProvider<>(SELECTION, new Selection()));
 	}
 }

@@ -23,7 +23,7 @@ public class ServerWorldMixin
 		if (oldState.is(newState.getBlock()))
 			return;
 		ServerLevel world = (ServerLevel) (Object) this;
-		ILockableHandler handler = world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+		ILockableHandler handler = world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 		// create buffer list because otherwise we will be deleting elements while iterating (BAD!!)
 		handler.getInChunk(pos).values().stream().filter(lkb -> lkb.bb.intersects(pos)).collect(Collectors.toList()).forEach(lkb ->
 		{

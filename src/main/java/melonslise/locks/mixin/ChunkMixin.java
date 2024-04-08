@@ -21,8 +21,8 @@ public class ChunkMixin {
 	@Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ProtoChunk;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;)V")
 	private void init(ServerLevel world, ProtoChunk pr, LevelChunk.PostLoadProcessor pPostLoad, CallbackInfo ci) {
 		LevelChunk ch = (LevelChunk) (Object) this;
-		ILockableStorage st = ch.getCapability(LocksCapabilities.Instances.LOCKABLE_STORAGE).orElse(null);
-		ILockableHandler handler = world.getCapability(LocksCapabilities.Instances.LOCKABLE_HANDLER).orElse(null);
+		ILockableStorage st = ch.getCapability(LocksCapabilities.LOCKABLE_STORAGE).orElse(null);
+		ILockableHandler handler = world.getCapability(LocksCapabilities.LOCKABLE_HANDLER).orElse(null);
 		// We trust that all checks pass (such as volume and intersect checks) due to this happening only during world gen
 		for (Lockable lkb : ((ILockableProvider) pr).getLockables()) {
 			st.add(lkb);

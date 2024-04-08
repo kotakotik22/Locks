@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ChestBlockEntity.class)
 public class ChestTileEntityMixin
 {
-	@Inject(at = @At("HEAD"), method = "getCapability(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/util/Direction;)Lnet/minecraftforge/common/util/LazyOptional;", cancellable = true, remap = false)
+	@Inject(at = @At("HEAD"), method = "getCapability(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/core/Direction;)Lnet/minecraftforge/common/util/LazyOptional;", cancellable = true, remap = false)
 	private void getCapability(Capability cap, Direction side, CallbackInfoReturnable<LazyOptional> cir)
 	{
 		BlockEntity te = (BlockEntity) (Object) this;
