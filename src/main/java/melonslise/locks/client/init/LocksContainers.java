@@ -1,5 +1,6 @@
 package melonslise.locks.client.init;
 
+import melonslise.locks.common.init.LocksMenuTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -9,6 +10,6 @@ public final class LocksContainers {
     }
 
     public static void register() {
-
+        LocksMenuTypes.registerScreens();
     }
 }
